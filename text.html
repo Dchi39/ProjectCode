@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Dashboard</title>
+    <style>
+        /* Styles for the Sensor Dashboard */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .Wethercard {
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 200px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .Wethercard:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #007BFF;
+        }
+
+        @media screen and (max-width: 768px) {
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Real-Time Sensor Dashboard</h1>
+        <div class="card-container">
+            <div class="Wethercard">
+                <div class="icon">
+                    🌡️
+                </div>
+                <h2>Temperature</h2>
+                <p id="temperature">-- °C</p>
+            </div>
+            <div class="Wethercard">
+                <div class="icon">
+                    💧
+                </div>
+                <h2>Humidity</h2>
+                <p id="humidity">-- %</p>
+            </div>
+            <div class="Wethercard">
+                <div class="icon">
+                    🌱
+                </div>
+                <h2>Soil Moisture</h2>
+                <p id="soil-moisture">-- %</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        // JavaScript to update sensor values
+        function updateSensors() {
+            // Simulate fetching data from sensors or an API
+            const temperature = (20 + Math.random() * 10).toFixed(1); // Example range: 20-30°C
+            const humidity = (40 + Math.random() * 20).toFixed(1); // Example range: 40-60%
+            const soilMoisture = (30 + Math.random() * 50).toFixed(1); // Example range: 30-80%
+
+            document.getElementById("temperature").textContent = `${temperature} °C`;
+            document.getElementById("humidity").textContent = `${humidity} %`;
+            document.getElementById("soil-moisture").textContent = `${soilMoisture} %`;
+        }
+
+        // Update sensor readings every 2 seconds
+        setInterval(updateSensors, 2000);
+        updateSensors(); // Initial load
+    </script>
+</body>
+</html>

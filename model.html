@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Simulation Model</title>
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <link href="css/custome.css" rel="stylesheet" />
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3">AI BOT</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="monitor.html">Dashboard</a></li>
+                        <li><a class="dropdown-item" href="model.html">Ai Model</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="../index.html">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Addons</div>
+                            <a class="nav-link" href="../index.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                Main Page
+                            </a>
+                            <a class="nav-link" href="../Admin/monitor.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        USER
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">Simulation Ai Model</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="../Admin/monitor.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Simulation Model</li>
+                        </ol>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-sm-6 box">
+                            <div class="container">
+                                <div class="slider-container">
+                                    <label for="stage">Stage</label>
+                                    <select id="stage" onchange="updateStage()" >
+                                        <option value="Seed-Germinating">Seed-Germinating</option>
+                                        <option value="Seedling-Stage">Seedling-Stage</option>
+                                        <option value="Vegetation-Growth">Vegetation-Growth</option>
+                                        <option value="Flowering">Flowering</option>
+                                        <option value="Fruiting">Fruiting</option>   
+                                        <option value="Harvesting">Harvesting</option>                                    
+                                    </select>
+                                </div>
+                        
+                                <div class="slider-container">
+                                    <label for="temp-slider">Temperature (°C)</label>
+                                    <input type="range" id="temp-slider" min="0" max="50" value="25" oninput="updateTempValue(this.value)">
+                                    <div class="output">Current Temperature: <span id="temp-value">25</span>°C</div>
+                                </div>
+                        
+                                <div class="slider-container">
+                                    <label for="humidity-slider">Humidity (%)</label>
+                                    <input type="range" id="humidity-slider" min="0" max="100" value="50" oninput="updateHumidityValue(this.value)">
+                                    <div class="output">Current Humidity: <span id="humidity-value">50</span>%</div>
+                                </div>
+                        
+                                <div class="slider-container">
+                                    <label for="moisture-slider">Soil Moisture Level (%)</label>
+                                    <input type="range" id="moisture-slider" min="0" max="100" value="30" oninput="updateMoistureValue(this.value)">
+                                    <div class="output">Current Soil Moisture: <span id="moisture-value">30</span>%</div>
+                                </div>
+                        
+                                <button onclick="sendData()">Get Prediction</button>
+                        
+                                <div id="prediction">Predicted Days to Harvesting: <span id="prediction-value">N/A</span></div>
+                            </div>
+                         </div>
+                            <div class="col-sm-6">
+                                <div id="image-frame">
+                                        <p>Prediction Image (400x600)</p>
+                                        <!-- Image will appear here -->
+                                </div>
+                                <div id="image-details">
+                                    <div id="prediction">Status of Plant <br><span id="Plant_status_type">Healthy Plant</span></div>
+                                    <div id="prediction">Temperature Level <br><span id="Plant_temperature_type">Healthy Plant</span></div>
+                                    <div id="prediction">Humidiy Level <br><span id="Plant_humidity_type">Healthy Plant</span></div>
+                                    <div id="prediction">Soil moisture Level <br><span id="Plant_soil_type">Healthy Plant</span></div>
+                                </div>
+                            </div>
+                     </div>
+                    
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Dulitha chirath 2024</div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script>
+            const images = {
+                "Seed-Germinating": "Seed-Germinating.jpeg",
+                "Seedling-Stage": "seedling.webp",
+                "Vegetation-Growth": "Vegetation-Growth.jpeg",
+                "Flowering": "Flowering.webp",
+                "Fruiting": "Fruiting.webp",
+                "Harvesting":"Harvesting.webp",
+            };
+            const diseaseImages = {
+                "seed_wilt": "seed_wilting.webp",
+                "damping_off": "Damping-Off.webp",
+                "sedlling_pm": "sedlling_pm.webp",
+                "seedling_willting": "seedling_willting.webp",
+                "V_Powerdey": "V_Powerdey.jpeg",
+                "V_willting": "V_willting.jpeg",
+                "Floweing_mildew": "flower_pm.webp",
+                "Flowering_seed_wilting": "flowering_wilting.webp",
+                "Fruiting_pm": "Fruiting_pm.webp",
+                "Fruting_Wilting": "Fruting_Wilting.webp",
+                "Harvesting_wilt": "harvest-wilting.webp",
+                "Harvesting_pm": "harvest-pm.webp",
+            };
+    
+            // Update slider values
+            function updateTempValue(value) {
+                document.getElementById('temp-value').textContent = value;
+                updateStage(); 
+            }
+    
+            function updateHumidityValue(value) {
+                document.getElementById('humidity-value').textContent = value;
+                updateStage(); 
+            }
+    
+            function updateMoistureValue(value) {
+                document.getElementById('moisture-value').textContent = value;
+                updateStage(); 
+            }
+    
+            // Update stage-specific behavior
+            function updateStage() {
+                const stage = document.getElementById('stage').value;
+                const temperature = parseFloat(document.getElementById('temp-slider').value);
+                const humidity = parseFloat(document.getElementById('humidity-slider').value);
+                const moisture = parseFloat(document.getElementById('moisture-slider').value);
+       
+                let imgSrc = `Model_Images/${images[stage]}`;  // Default image based on stage
+                // Seed Germination stage
+                if (stage == "Seed-Germinating"){
+                    // Condition for Powdery Mildew: High Humidity (>80%) and Low Temperature (<20°C)
+                    if (humidity > 80 && temperature < 25) {
+                        imgSrc = `Model_Images/${diseaseImages["damping_off"]}`;
+                    }
+                    // Condition for Wilting: High Temperature and Low Soil Moisture
+                    else if (temperature > 30 && moisture < 30) {
+                        imgSrc = `Model_Images/${diseaseImages["seed_wilt"]}`;
+                    }
+                }
+                // Seedling stage
+                if (stage == "Seedling-Stage"){
+                    // Condition for Powdery Mildew: High Humidity (>60%) and Low Temperature (<25°C)
+                    if (humidity > 60 && temperature < 25) {
+                        imgSrc = `Model_Images/${diseaseImages["sedlling_pm"]}`;
+                    }
+                    // Condition for Wilting: High Temperature and Low Soil Moisture
+                    else if (temperature > 30 && moisture < 40) {
+                        imgSrc = `Model_Images/${diseaseImages["seedling_willting"]}`;
+                    }
+                }
+                // Vegetation stage
+                if (stage == "Vegetation-Growth"){
+                    // Condition for Powdery Mildew: High Humidity (>70%) and Low Temperature (<20°C)
+                    if (humidity > 70 && temperature < 25) {
+                        imgSrc = `Model_Images/${diseaseImages["V_Powerdey"]}`;
+                    }
+                    // Condition for Wilting: High Temperature and Low Soil Moisture
+                    else if (temperature > 30 && moisture < 30) {
+                        imgSrc = `Model_Images/${diseaseImages["V_willting"]}`;
+                    }
+                }
+                // Flowering stage
+                if (stage == "Flowering"){
+                    // Condition for Powdery Mildew: High Humidity (>70%) and Low Temperature (<20°C)
+                    if (humidity > 70 && temperature < 25) {
+                        imgSrc = `Model_Images/${diseaseImages["Floweing_mildew"]}`;
+                    }
+                    // Condition for Wilting: High Temperature and Low Soil Moisture
+                    else if (temperature > 30 && moisture < 30) {
+                        imgSrc = `Model_Images/${diseaseImages["Flowering_seed_wilting"]}`;
+                    }
+                }
+                // Fruting stage
+                if (stage == "Fruiting"){
+                    // Condition for Powdery Mildew: High Humidity (>70%) and Low Temperature (<20°C)
+                    if (humidity > 80 && temperature < 22) {
+                        imgSrc = `Model_Images/${diseaseImages["Fruiting_pm"]}`;
+                    }
+                    // Condition for Wilting: High Temperature and Low Soil Moisture
+                    else if (temperature > 30 && moisture < 30) {
+                        imgSrc = `Model_Images/${diseaseImages["Fruting_Wilting"]}`;
+                    }
+                }
+                // Harvesting stage
+                if (stage == "Harvesting"){
+                    // Condition for Powdery Mildew: High Humidity (>70%) and Low Temperature (<20°C)
+                    if (humidity > 70 && temperature < 25) {
+                        imgSrc = `Model_Images/${diseaseImages["Harvesting_pm"]}`;
+                    }
+                    // Condition for Wilting: High Temperature and Low Soil Moisture
+                    else if (temperature > 30 && moisture < 30) {
+                        imgSrc = `Model_Images/${diseaseImages["Harvesting_wilt"]}`;
+                    }
+                }
+
+                const plant_status = document.getElementById('Plant_status_type');
+                const plant_humidity = document.getElementById('Plant_humidity_type');
+                const Plant_temperature = document.getElementById('Plant_temperature_type');
+                const plant_soil = document.getElementById('Plant_soil_type');
+
+                plant_status.classList.remove('healthy', 'normal', 'serious');
+                Plant_temperature.classList.remove('healthy', 'normal', 'serious');
+                plant_humidity.classList.remove('healthy', 'normal', 'serious');
+                plant_soil.classList.remove('healthy', 'normal', 'serious');
+
+                // Update the details prediction based on the stage
+                if(stage == "Seed-Germinating"){
+                    if(temperature > 20 && temperature < 30){
+                        Plant_temperature.textContent = 'Good Temperature level';
+                        Plant_temperature.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature > 18 && temperature < 35){
+                        Plant_temperature.textContent = 'Normal Temperature level';
+                        Plant_temperature.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 18 || temperature > 35){
+                        Plant_temperature.textContent = 'germination is inhibited (Optimal range is 20-30°C)';
+                        Plant_temperature.classList.add('serious'); // Orange for wilting
+                    }
+                    //Humidty level
+                    if(humidity > 60 && humidity < 80){
+                        plant_humidity.textContent = 'Good Humidity level';
+                        plant_humidity.classList.add('healthy'); // Green for healthy plant
+                    }else if(humidity < 60 && humidity >= 50){
+                        plant_humidity.textContent = 'Keep Increase Humidity level to ensure moisture retention.';
+                        plant_humidity.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(humidity < 50 || humidity > 80){
+                        plant_humidity.textContent = 'seed desiccation (Optimal range is 60-80%)';
+                        plant_humidity.classList.add('serious'); // Red for spot disease
+                    }
+                    //Soil moisture level
+                    if(moisture > 70 && moisture < 80){
+                        plant_soil.textContent = 'Good Soil Moisture level';
+                        plant_soil.classList.add('healthy'); // Green for healthy plant
+                    }else if(moisture < 70 && moisture >= 40){
+                        plant_soil.textContent = 'Keep Increase Soil Moisture level to ensure soilmoisture retention.';
+                        plant_soil.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(moisture < 40 ){
+                        plant_soil.textContent = 'seed desiccation (Optimal range is 70-80%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }else if(moisture > 80){
+                        plant_soil.textContent = 'waterlogged(Optimal range is 70-80%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }
+                    if(temperature > 20 && temperature <= 30 && humidity >= 60 && humidity <= 80 && moisture >= 70 && moisture <= 80){
+                        plant_status.textContent = 'Healthy Plant';
+                        plant_status.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature >= 18 && temperature <= 35 && humidity <= 60 && humidity >= 50 && moisture <= 70 && moisture >= 40){
+                        plant_status.textContent = 'Normal Plant';
+                        plant_status.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 18 || temperature > 35 || humidity < 50 || humidity > 80 || moisture < 40 || moisture > 80){
+                        plant_status.textContent = 'Stress Plant';
+                        plant_status.classList.add('serious'); // Red for spot disease
+                    }
+                }
+                if(stage == "Seedling-Stage"){
+                    if(temperature > 20 && temperature < 25){
+                        Plant_temperature.textContent = 'Good Temperature level';
+                        Plant_temperature.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature > 18 && temperature < 33){
+                        Plant_temperature.textContent = 'Normal Temperature level';
+                        Plant_temperature.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 18 || temperature > 33){
+                        Plant_temperature.textContent = 'stunted seedlings (Optimal range is 20-25°C)';
+                        Plant_temperature.classList.add('serious'); // Orange for wilting
+                    }
+                    //Humidty level
+                    if(humidity > 50 && humidity <= 60){
+                        plant_humidity.textContent = 'Good Humidity level';
+                        plant_humidity.classList.add('healthy'); // Green for healthy plant
+                    }else if(humidity < 50 && humidity >= 40){
+                        plant_humidity.textContent = 'Keep Increase Humidity level to ensure moisture retention.';
+                        plant_humidity.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(humidity < 40 || humidity >= 60){
+                        plant_humidity.textContent = 'stress on seedlings. (Optimal range is 50-60%)';
+                        plant_humidity.classList.add('serious'); // Red for spot disease
+                    }
+                    //Soil moisture level
+                    if(moisture > 60 && moisture < 70){
+                        plant_soil.textContent = 'Good Soil Moisture level';
+                        plant_soil.classList.add('healthy'); // Green for healthy plant
+                    }else if(moisture < 60 && moisture > 40){
+                        plant_soil.textContent = 'Keep Increase Soil Moisture level to ensure soilmoisture retention.';
+                        plant_soil.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(moisture < 40 ){
+                        plant_soil.textContent = 'cause to leaves willting (Optimal range is 60-70%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }else if(moisture > 80){
+                        plant_soil.textContent = 'suffocate roots, powdery mildew & cause damping-off disease (Optimal range is 60-70%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }
+
+                    if(temperature > 20 && temperature <= 25 && humidity >= 50 && humidity <= 60 && moisture >= 60 && moisture <= 70){
+                        plant_status.textContent = 'Healthy Plant';
+                        plant_status.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature >= 18 && temperature <= 33 && humidity <= 50 && humidity >= 40 && moisture <= 60 && moisture >= 40){   
+                        plant_status.textContent = 'Normal Plant';
+                        plant_status.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 18 || temperature > 33 || humidity < 40 || humidity > 60 || moisture < 40 || moisture > 70){
+                        plant_status.textContent = 'Stress Plant';
+                        plant_status.classList.add('serious'); // Red for spot disease
+                    }
+                }
+                if(stage == "Vegetation-Growth"){
+                    if(temperature > 22 && temperature < 28){
+                        Plant_temperature.textContent = 'Good Temperature level';
+                        Plant_temperature.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature > 18 && temperature <32 ){
+                        Plant_temperature.textContent = 'Normal Temperature level';
+                        Plant_temperature.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 18 || temperature > 32){
+                        Plant_temperature.textContent = 'reduce plant vigor (Optimal range is 22-28°C)';
+                        Plant_temperature.classList.add('serious'); // Orange for wilting
+                    }
+                    //Humidty level
+                    if(humidity > 50 && humidity < 60){
+                        plant_humidity.textContent = 'Good Humidity level';
+                        plant_humidity.classList.add('healthy'); // Green for healthy plant
+                    }else if(humidity < 50 && humidity > 40){
+                        plant_humidity.textContent = 'Keep Increase Humidity level to ensure moisture retention.';
+                        plant_humidity.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(humidity < 40 || humidity > 60){
+                        plant_humidity.textContent = 'Powder mildew or reduce plant vigor(Optimal range is 50-60%)';
+                        plant_humidity.classList.add('serious'); // Red for spot disease
+                    }
+                    //Soil moisture level
+                    if(moisture > 60 && moisture < 80){
+                        plant_soil.textContent = 'Good Soil Moisture level';
+                        plant_soil.classList.add('healthy'); // Green for healthy plant
+                    }else if(moisture < 60 && moisture > 40){
+                        plant_soil.textContent = 'Keep Increase Soil Moisture level to ensure soilmoisture retention.';
+                        plant_soil.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(moisture < 40 ){
+                        plant_soil.textContent = 'cause to leaves willting (Optimal range is 60-80%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }else if(moisture > 80){
+                        plant_soil.textContent = 'reduce plant vigor (Optimal range is 60-80%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }
+                    if(temperature > 22 && temperature <= 28 && humidity >= 50 && humidity <= 60 && moisture >= 60 && moisture <= 80){
+                        plant_status.textContent = 'Healthy Plant';
+                        plant_status.classList.add('healthy'); // Green for healthy plant  
+                    }else if(temperature >= 18 && temperature <= 32 && humidity <= 50 && humidity >= 40 && moisture <= 60 && moisture >= 40){   
+                        plant_status.textContent = 'Normal Plant';
+                        plant_status.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 18 || temperature > 32 || humidity < 40 || humidity > 60 || moisture < 40 || moisture > 80){
+                        plant_status.textContent = 'Stress Plant';
+                        plant_status.classList.add('serious'); // Red for spot disease
+                    }
+                }
+                if(stage == "Flowering"){
+                    if(temperature > 18 && temperature < 26){
+                        Plant_temperature.textContent = 'Good Temperature level';
+                        Plant_temperature.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature > 17 && temperature <31 ){
+                        Plant_temperature.textContent = 'Normal Temperature level';
+                        Plant_temperature.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 17 || temperature > 31){
+                        Plant_temperature.textContent = 'reduce plant vigor (Optimal range is 18-26°C)';
+                        Plant_temperature.classList.add('serious'); // Orange for wilting
+                    }
+                    //Humidty level
+                    if(humidity > 50 && humidity < 70){
+                        plant_humidity.textContent = 'Good Humidity level';
+                        plant_humidity.classList.add('healthy'); // Green for healthy plant
+                    }else if(humidity < 50 && humidity > 40){
+                        plant_humidity.textContent = 'Keep Increase Humidity level to ensure moisture retention.';
+                        plant_humidity.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(humidity < 40 || humidity > 70){
+                        plant_humidity.textContent = 'Powder mildew or reduce plant vigor(Optimal range is 50-60%)';
+                        plant_humidity.classList.add('serious'); // Red for spot disease
+                    }
+                    //Soil moisture level
+                    if(moisture > 70 && moisture < 80){
+                        plant_soil.textContent = 'Good Soil Moisture level';
+                        plant_soil.classList.add('healthy'); // Green for healthy plant
+                    }else if(moisture < 60 && moisture > 40){
+                        plant_soil.textContent = 'Keep Increase Soil Moisture level to ensure soilmoisture retention.';
+                        plant_soil.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(moisture < 40 ){
+                        plant_soil.textContent = 'cause to leaves willting (Optimal range is 70-80%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }else if(moisture > 80){
+                        plant_soil.textContent = 'reduce plant vigor (Optimal range is 70-80%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }
+                    if(temperature > 18 && temperature <= 26 && humidity >= 50 && humidity <= 70 && moisture >= 70 && moisture <= 80){
+                        plant_status.textContent = 'Healthy Plant';
+                        plant_status.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature >= 17 && temperature <= 31 && humidity <= 50 && humidity >= 40 && moisture <= 60 && moisture >= 40){
+                        plant_status.textContent = 'Normal Plant';
+                        plant_status.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 17 || temperature > 31 || humidity < 40 || humidity > 70 || moisture < 40 || moisture > 80){
+                        plant_status.textContent = 'Stress Plant';
+                        plant_status.classList.add('serious'); // Red for spot disease
+                    }
+                }
+                if(stage == "Fruiting"){
+                    if(temperature > 18 && temperature < 26){
+                        Plant_temperature.textContent = 'Good Temperature level';
+                        Plant_temperature.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature > 17 && temperature <32 ){
+                        Plant_temperature.textContent = 'Normal Temperature level';
+                        Plant_temperature.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 17 || temperature > 32){
+                        Plant_temperature.textContent = 'reduce plant vigor (Optimal range is 22-28°C)';
+                        Plant_temperature.classList.add('serious'); // Orange for wilting
+                    }
+                    //Humidty level
+                    if(humidity > 60 && humidity < 80){
+                        plant_humidity.textContent = 'Good Humidity level';
+                        plant_humidity.classList.add('healthy'); // Green for healthy plant
+                    }else if(humidity < 60 && humidity > 45){
+                        plant_humidity.textContent = 'Keep Increase Humidity level to ensure moisture retention.';
+                        plant_humidity.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(humidity < 45 || humidity > 60){
+                        plant_humidity.textContent = 'Powder mildew or reduce plant vigor(Optimal range is 50-60%)';
+                        plant_humidity.classList.add('serious'); // Red for spot disease
+                    }
+                    //Soil moisture level
+                    if(moisture > 70 && moisture < 85){
+                        plant_soil.textContent = 'Good Soil Moisture level';
+                        plant_soil.classList.add('healthy'); // Green for healthy plant
+                    }else if(moisture < 70 && moisture > 45){
+                        plant_soil.textContent = 'Keep Increase Soil Moisture level to ensure soilmoisture retention.';
+                        plant_soil.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(moisture < 45 ){
+                        plant_soil.textContent = 'cause to leaves willting (Optimal range is 60-80%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }else if(moisture > 85){
+                        plant_soil.textContent = 'reduce plant vigor (Optimal range is 70-85%)';
+                        plant_soil.classList.add('serious'); // Red for spot disease
+                    }
+                    if(temperature > 18 && temperature <= 26 && humidity >= 60 && humidity <= 80 && moisture >= 70 && moisture <= 85){
+                        plant_status.textContent = 'Healthy Plant';
+                        plant_status.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature >= 17 && temperature <= 32 && humidity <= 60 && humidity >= 45 && moisture <= 70 && moisture >= 45){
+                        plant_status.textContent = 'Normal Plant';
+                        plant_status.classList.add('normal'); // Orange for wilting
+                    }
+                    else if(temperature < 17 || temperature > 32 || humidity < 45 || humidity > 60 || moisture < 45 || moisture > 85){
+                        plant_status.textContent = 'Stress Plant';
+                        plant_status.classList.add('serious'); // Red for spot disease
+                    }
+                }
+                if(stage == "Harvesting"){
+                    if(temperature > 19 && temperature < 26){
+                        Plant_temperature.textContent = 'Good Temperature level';
+                        Plant_temperature.classList.add('healthy'); // Green for healthy plant
+                    }else if(temperature > 17 && temperature <32 ){
+                        Plant_temperature.textContent = 'Normal Temperature level';
+                        Plant_temperature.classList.add('normal');
+                    }
+                    else if(temperature < 17 || temperature > 32){
+                        Plant_temperature.textContent = 'reduce plant vigor (Optimal range is 22-28°C)';
+                        Plant_temperature.classList.add('serious');
+                    }
+                    //Humidty level
+                    if(humidity > 50 && humidity < 60){
+                        plant_humidity.textContent = 'Good Humidity level';
+                        plant_humidity.classList.add('healthy');
+                    }else if(humidity < 50 && humidity > 45){
+                        plant_humidity.textContent = 'Keep Increase Humidity level to ensure moisture retention.';
+                        plant_humidity.classList.add('normal');
+                    }
+                    else if(humidity < 45 || humidity > 60){
+                        plant_humidity.textContent = 'Powder mildew or reduce plant vigor(Optimal range is 50-60%)';
+                        plant_humidity.classList.add('serious');
+                    }
+                    //Soil moisture level
+                    if(moisture > 60 && moisture < 70){
+                        plant_soil.textContent = 'Good Soil Moisture level';
+                        plant_soil.classList.add('healthy');
+                    }else if(moisture < 60 && moisture > 45){
+                        plant_soil.textContent = 'Keep Increase Soil Moisture level to ensure soilmoisture retention.';
+                        plant_soil.classList.add('normal');
+                    }
+                    else if(moisture < 45 ){
+                        plant_soil.textContent = 'cause to leaves willting (Optimal range is 60-80%)';
+                        plant_soil.classList.add('serious');
+                    }else if(moisture > 70){
+                        plant_soil.textContent = 'reduce plant vigor (Optimal range is 70-85%)';
+                        plant_soil.classList.add('serious');
+                    }
+                    if(temperature > 19 && temperature <= 26 && humidity >= 50 && humidity <= 60 && moisture >= 60 && moisture <= 70){
+                        plant_status.textContent = 'Healthy Plant';
+                        plant_status.classList.add('healthy');
+                    }else if(temperature >= 17 && temperature <= 32 && humidity <= 50 && humidity >= 45 && moisture <= 60 && moisture >= 45){
+                        plant_status.textContent = 'Normal Plant';
+                        plant_status.classList.add('normal');
+                    }
+                    else if(temperature < 17 || temperature > 32 || humidity < 45 || humidity > 60 || moisture < 45 || moisture > 70){
+                        plant_status.textContent = 'Stress Plant';
+                        plant_status.classList.add('serious');
+                    }
+                }
+
+                
+
+                // Update the image based on the stage
+                const imgFrame = document.getElementById('image-frame');
+                    
+                imgFrame.innerHTML = `<img src="${imgSrc}" alt="${stage} Image">`;  
+            }
+                
+            // WebSocket connection
+            const socket = new WebSocket("ws://localhost:6790");
+    
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                document.getElementById('prediction-value').textContent = data.prediction;
+            };
+    
+            // Function to send data to WebSocket server
+            function sendData() {
+                const stage = document.getElementById('stage').value;
+                const temperature = document.getElementById('temp-slider').value;
+                const humidity = document.getElementById('humidity-slider').value;
+                const moisture = document.getElementById('moisture-slider').value;
+    
+                const data = {
+                    stage: stage,
+                    temperature: temperature,
+                    humidity: humidity,
+                    moisture: moisture
+                };
+    
+                socket.send(JSON.stringify(data));
+            }
+    
+            // Initialize stage
+            document.addEventListener("DOMContentLoaded", updateStage);
+        </script>
+    
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        
+    </body>
+</html>
